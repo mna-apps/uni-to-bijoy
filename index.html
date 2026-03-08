@@ -4,73 +4,554 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ইউনিকোড থেকেবিজয় টেক্সট কনভার্টার - ১০০% কার্যকর</title>
-    <link rel="stylesheet" href="style.css">
+    <title>ইউনিকোড থেকে বিজয় টেক্সট কনভার্টার - Abswer.com</title>
+    <meta name="description" content="ইউনিকোড থেকে বিজয় এবং বিজয় থেকে ইউনিকোড বাংলা টেক্সট কনভার্টার - Abswer.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background: linear-gradient(135deg, #f0faf6 0%, #e8f5f1 100%);
+            color: #2d3748;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: #fff;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            box-shadow: 0 2px 12px rgba(0, 160, 130, .12);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00a082;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: #2d3748;
+            font-size: .85rem;
+            display: block;
+            font-weight: 400;
+            line-height: 1;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 6px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 20px;
+            transition: all .25s;
+            font-size: .92rem;
+        }
+
+        nav ul li a:hover {
+            background: #e6f7f3;
+            color: #00a082;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-login {
+            padding: 7px 18px;
+            border-radius: 20px;
+            border: 1.5px solid #00a082;
+            background: transparent;
+            color: #00a082;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: .88rem;
+            transition: all .25s;
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+
+        .btn-login:hover {
+            background: #e6f7f3;
+        }
+
+        .btn-join {
+            padding: 7px 18px;
+            border-radius: 20px;
+            border: none;
+            background: #00a082;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: .88rem;
+            transition: all .25s;
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+
+        .btn-join:hover {
+            background: #008a6f;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 160, 130, .3);
+        }
+
+        main {
+            flex: 1;
+            padding: 36px 20px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .page-title h1 {
+            font-size: 1.75rem;
+            color: #1a202c;
+            font-weight: 700;
+        }
+
+        .page-title p {
+            color: #00a082;
+            font-size: .95rem;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 28px auto 0;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 160, 130, .1);
+            overflow: hidden;
+        }
+
+        .textarea-wrapper {
+            position: relative;
+        }
+
+        .label-bar {
+            background: #f7fdfb;
+            padding: 10px 18px;
+            font-weight: 600;
+            font-size: .88rem;
+            color: #444;
+            border-bottom: 1px solid #e6f7f3;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .label-bar .dot {
+            width: 8px;
+            height: 8px;
+            background: #00a082;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        textarea {
+            width: 100%;
+            height: 175px;
+            padding: 16px 18px;
+            border: none;
+            outline: none;
+            resize: none;
+            font-size: 1.15rem;
+            line-height: 1.7;
+            color: #2d3748;
+            background: #fff;
+        }
+
+        #unicode-input {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+
+        #bijoy-output {
+            font-family: 'SutonnyMJ', 'Shonar Bangla', serif;
+            font-size: 1.5rem;
+        }
+
+        .utility-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            padding: 8px 14px;
+            background: #f7fdfb;
+            border-top: 1px solid #e6f7f3;
+        }
+
+        .btn-util {
+            background: #fff;
+            border: 1px solid #d0ede6;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: .82rem;
+            color: #555;
+            transition: all .2s;
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+
+        .btn-util:hover {
+            background: #e6f7f3;
+            border-color: #00a082;
+            color: #00a082;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            padding: 14px 18px;
+            background: #f0faf6;
+            border-top: 1px solid #e6f7f3;
+            border-bottom: 1px solid #e6f7f3;
+        }
+
+        .btn-convert {
+            padding: 11px 28px;
+            background: #00a082;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all .25s;
+            font-family: 'Hind Siliguri', sans-serif;
+            box-shadow: 0 3px 10px rgba(0, 160, 130, .25);
+        }
+
+        .btn-convert:hover {
+            background: #008a6f;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 160, 130, .35);
+        }
+
+        .btn-convert:active {
+            transform: translateY(0);
+        }
+
+        .btn-convert.secondary {
+            background: #fff;
+            color: #00a082;
+            border: 2px solid #00a082;
+            box-shadow: none;
+        }
+
+        .btn-convert.secondary:hover {
+            background: #e6f7f3;
+            box-shadow: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 24px;
+            color: #888;
+            font-size: .85rem;
+            border-top: 1px solid #e6f7f3;
+            background: #fff;
+        }
+
+        footer a {
+            color: #00a082;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 640px) {
+            header {
+                padding: 0 16px;
+            }
+
+            nav {
+                display: none;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .page-title h1 {
+                font-size: 1.35rem;
+            }
+        }
+
+        /* Success toast */
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #00a082;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: .9rem;
+            font-weight: 600;
+            transition: transform .3s ease;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
 </head>
 
 <body>
+
     <header>
-        <div class="logo">আবিষ্কার.কম</div>
+        <div class="logo">
+            আবিষ্কার.কম
+            <span>ABSWER.COM</span>
+        </div>
         <nav>
             <ul>
                 <li><a href="https://www.abswer.com">Home</a></li>
-                <li><a href="https://www.abswer.com/books">Books</a></li>
-                <li><a href="https://www.abswer.com/about">About</a></li>
+                <li><a href="https://www.abswer.com">Books</a></li>
+                <li><a href="https://www.abswer.com">About</a></li>
             </ul>
         </nav>
-        <div class="auth-buttons">
-            <button class="login-btn">Login</button>
-            <button class="register-btn">Join Now</button>
+        <div class="header-right">
+            <button class="btn-login">Login</button>
+            <button class="btn-join">Join Now</button>
         </div>
     </header>
 
-    <div class="container">
-        <h1>ইউনিকোড থেকে বিজয় টেক্সট কনভার্টার</h1>
-        <p style="text-align: center; color: #666; margin-bottom: 20px;">The Largest e-Learning Platform</p>
+    <main>
+        <div class="page-title">
+            <h1>ইউনিকোড ↔ বিজয় বাংলা টেক্সট কনভার্টার</h1>
+            <p>The Largest e-Learning Platform — abswer.com</p>
+        </div>
 
-        <div class="converter-section">
+        <div class="container">
+            <!-- Unicode Input -->
             <div class="textarea-wrapper">
                 <div class="label-bar">
-                    <span>ইউনিকোড কিবোর্ডর লেখা এখানে লিখুন</span>
+                    <span class="dot"></span>
+                    ইউনিকোড টেক্সট (Avro / Unicode keyboard)
                 </div>
-                <textarea id="unicode-input" placeholder="এখানে ইউনিকোড টেক্সট পেস্ট করুন..."></textarea>
+                <textarea id="unicode-input" placeholder="এখানে ইউনিকোড বাংলা টেক্সট লিখুন বা পেস্ট করুন..."></textarea>
                 <div class="utility-bar">
-                    <button class="btn-util" onclick="copyText('unicode-input')">
-                        <i>📋</i> Copy
-                    </button>
-                    <button class="btn-util" onclick="clearText('unicode-input')">
-                        <i>🗑️</i> Clear
-                    </button>
+                    <button class="btn-util" onclick="copyText('unicode-input')">📋 Copy</button>
+                    <button class="btn-util" onclick="clearText('unicode-input')">🗑️ Clear</button>
                 </div>
             </div>
 
+            <!-- Controls -->
             <div class="controls">
-                <button class="btn-convert" id="uni-to-bijoy">ইউনিকোড থেকে বিজয় ↓</button>
-                <button class="btn-convert" id="bijoy-to-uni">বিজয় থেকে ইউনিকোড ↑</button>
+                <button class="btn-convert" id="uni-to-bijoy-btn">ইউনিকোড থেকে বিজয় ↓</button>
+                <button class="btn-convert secondary" id="bijoy-to-uni-btn">বিজয় থেকে ইউনিকোড ↑</button>
             </div>
 
+            <!-- Bijoy Output -->
             <div class="textarea-wrapper">
                 <div class="label-bar">
-                    <span>বিজয় কিবোর্ডর লেখা এখানে পাবেন</span>
+                    <span class="dot" style="background:#e67e22"></span>
+                    বিজয় টেক্সট (SutonnyMJ / Bijoy keyboard)
                 </div>
-                <textarea id="bijoy-output" placeholder="এখানে বিজয় টেক্সট দেখা যাবে..."></textarea>
+                <textarea id="bijoy-output" placeholder="এখানে বিজয় টেক্সট দেখা যাবে..."></textarea>
                 <div class="utility-bar">
-                    <button class="btn-util" onclick="copyText('bijoy-output')">
-                        <i>📋</i> Copy
-                    </button>
-                    <button class="btn-util" onclick="clearText('bijoy-output')">
-                        <i>🗑️</i> Clear
-                    </button>
+                    <button class="btn-util" onclick="copyText('bijoy-output')">📋 Copy</button>
+                    <button class="btn-util" onclick="clearText('bijoy-output')">🗑️ Clear</button>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <footer>
-        <p>All Right Reserved &copy; 2026 Abswer.com - The Largest e-Learning Platform</p>
+        All Right Reserved &copy; 2026 <a href="https://www.abswer.com">Abswer.com</a> — The Largest e-Learning Platform
     </footer>
 
-    <script type="module" src="./main.js"></script>
+    <div id="toast">✅ Copied!</div>
+
+    <script>
+        // ===== common helpers =====
+        function IsBanglaPreKar(c) { return c === "ি" || c === "ে" || c === "ৈ"; }
+        function IsBanglaBanjonborno(c) { return "কখগঘঙচছজঝঞটঠডঢণতথদধনপফবভমযরলশষসহড়ঢ়য়ৎ".includes(c); }
+        function IsBanglaHalant(c) { return c === "্"; }
+        function IsBanglaKar(c) { return "ািীুূৃেৈোৌ".includes(c); }
+        function IsBanglaNukta(c) { return c === "়"; }
+
+        // ===== Unicode → Bijoy =====
+        var u2b_map = {
+            "।": "|", "'": "Ô", "'": "Õ", "\u201c": "Ò", "\u201d": "Ó",
+            "্র্য": "ª¨", "র\u200c্য": "i¨",
+            "ক্ক": "°", "ক্ট": "±", "ক্ত": "³", "ক্ব": "K¡", "স্ক্র": "¯Œ", "ক্র": "µ", "ক্ল": "K¬", "ক্ষ": "¶", "ক্স": "·",
+            "গু": "¸", "গ্ধ": "»", "গ্ন": "Mœ", "গ্ম": "M¥", "গ্ল": "M­", "গ্রু": "Mªy",
+            "ঙ্ক": "¼", "ঙ্ক্ষ": "•¶", "ঙ্খ": "•L", "ঙ্গ": "½", "ঙ্ঘ": "•N",
+            "চ্চ": "\u201cP", "চ্ছ": "\u201cQ", "চ্ছ্ব": "\u201cQ¡", "চ্ঞ": "\u201cT",
+            "জ্জ্ব": "¾¡", "জ্জ": "¾", "জ্ঝ": "À", "জ্ঞ": "Á", "জ্ব": "R¡",
+            "ঞ্চ": "Â", "ঞ্ছ": "Ã", "ঞ্জ": "Ä", "ঞ্ঝ": "Å",
+            "ট্ট": "Æ", "ট্ব": "U¡", "ট্ম": "U¥", "ড্ড": "Ç",
+            "ণ্ট": "È", "ণ্ঠ": "É", "ণ্ড": "Ê", "ণ্ব": "Y^",
+            "ন্স": "Ý", "ন্তু": "š'", "ন্ট": "›U", "ন্ঠ": "Ú", "ন্ড": "Û", "ন্ত্র": "š¿", "ন্ত": "š—", "ন্থ": "š'", "ন্দ": "›`", "ন্দ্ব": "›Ø", "ন্ধ": "Ü", "ন্ন": "bœ", "ন্ব": "š^", "ন্ম": "b¥",
+            "ত্ত": "Ë", "ত্ত্ব": "Ë¡", "ত্থ": "Ì", "ত্ন": "Zœ", "ত্ম": "Z¥", "ত্ব": "Z¡", "ত্র": "Î",
+            "স্ত্র": "¯¿", "ন্ত্ব": "š—¡", "থ্ব": "_¡",
+            "দ্গ": "˜M", "দ্ঘ": "˜N", "দ্দ": "Ï", "দ্ধ": "×", "দ্ব": "Ø", "দ্ভ": "™¢", "দ্ম": "Ù", "দ্রু": "`ª\u201c",
+            "ধ্ব": "aŸ", "ধ্ম": "a¥",
+            "প্ট": "Þ", "প্ত": "ß", "প্ন": "cœ", "প্প": "à", "প্ল": "c­", "প্স": "á", "ফ্ল": "d¬",
+            "ব্জ": "â", "ব্দ": "ã", "ব্ধ": "ä", "ব্ব": "eŸ", "ব্ল": "e­", "ভ্র": "å",
+            "ম্ন": "gœ", "ম্প": "¤ú", "ম্ফ": "ç", "ম্ব": "¤^", "ম্ভ": "¤¢", "ম্ভ্র": "¤£", "ম্ম": "¤§", "ম্ল": "¤­",
+            "রু": "i\u201c", "রূ": "iƒ",
+            "ল্ক": "é", "ল্গ": "ê", "ল্ট": "ë", "ল্ড": "ì", "ল্প": "í", "ল্ফ": "î", "ল্ব": "j¦", "ল্ম": "j¥", "ল্ল": "jø",
+            "শু": "ï", "শ্চ": "ð", "শ্ন": "kœ", "শ্ব": "k¦", "শ্ম": "k¥", "শ্ল": "kø",
+            "ষ্ক": "®\u2039", "ষ্ক্র": "®Œ", "ষ্ট": "ó", "ষ্ঠ": "ô", "ষ্ণ": "ò", "ষ্প": "®ú", "ষ্ফ": "õ", "ষ্ম": "®§",
+            "স্ক": "¯\u2039", "স্ট": "÷", "স্খ": "ö", "স্ত": "¯—", "স্তু": "¯'", "স্থ": "¯'", "স্ন": "mœ", "স্প": "¯ú", "স্ফ": "ù", "স্ব": "¯^", "স্ম": "¯§", "স্ল": "¯­",
+            "হু": "û", "হ্ণ": "nè", "হ্ন": "ý", "হ্ম": "þ", "হ্ল": "n¬", "হৃ": "ü",
+            "র্": "©", "্র": "«", "্য": "¨", "্": "&",
+            "আ": "Av", "অ": "A", "ই": "B", "ঈ": "C", "উ": "D", "ঊ": "E", "ঋ": "F", "এ": "G", "ঐ": "H", "ও": "I", "ঔ": "J",
+            "ক": "K", "খ": "L", "গ": "M", "ঘ": "N", "ঙ": "O", "চ": "P", "ছ": "Q", "জ": "R", "ঝ": "S", "ঞ": "T",
+            "ট": "U", "ঠ": "V", "ড": "W", "ঢ": "X", "ণ": "Y", "ত": "Z", "থ": "_", "দ": "`", "ধ": "a", "ন": "b",
+            "প": "c", "ফ": "d", "ব": "e", "ভ": "f", "ম": "g", "য": "h", "র": "i", "ল": "j", "শ": "k", "ষ": "l", "স": "m", "হ": "n",
+            "ড়": "o", "ঢ়": "p", "য়": "q", "ৎ": "r",
+            "০": "0", "১": "1", "২": "2", "৩": "3", "৪": "4", "৫": "5", "৬": "6", "৭": "7", "৮": "8", "৯": "9",
+            "া": "v", "ি": "w", "ী": "x", "ু": "y", "ূ": "~", "ৃ": "…", "ে": "‡", "ৈ": "‰", "ৗ": "Š",
+            "ং": "s", "ঃ": "t", "ঁ": "u"
+        };
+
+        function reArrangeUni(str) {
+            var barrier = 0;
+            for (var i = 0; i < str.length; i++) {
+                if (IsBanglaPreKar(str[i])) {
+                    var j = 1;
+                    while (i - j >= 0 && IsBanglaBanjonborno(str[i - j])) {
+                        if (i - j <= barrier) break;
+                        if (i - j - 1 >= 0 && IsBanglaHalant(str[i - j - 1])) j += 2; else break;
+                    }
+                    str = str.slice(0, i - j) + str[i] + str.slice(i - j, i) + str.slice(i + 1);
+                    barrier = i + 1; continue;
+                }
+                if (i < str.length - 1 && IsBanglaHalant(str[i]) && str[i - 1] === "র" && (i < 2 || !IsBanglaHalant(str[i - 2]))) {
+                    var j = 1, fk = 0;
+                    while (true) {
+                        if (i + j < str.length - 1 && IsBanglaBanjonborno(str[i + j]) && IsBanglaHalant(str[i + j + 1])) j += 2;
+                        else if (i + j < str.length - 1 && IsBanglaBanjonborno(str[i + j]) && IsBanglaPreKar(str[i + j + 1])) { fk = 1; break; }
+                        else break;
+                    }
+                    str = str.slice(0, i - 1) + str.slice(i + j + 1, i + j + fk + 1) + str.slice(i + 1, i + j + 1) + str[i - 1] + str[i] + str.slice(i + j + fk + 1);
+                    i += j + fk; barrier = i + 1; continue;
+                }
+            }
+            return str;
+        }
+
+        function convertUniToBijoy(line) {
+            if (!line) return "";
+            line = line.replace(/ো/g, "ো").replace(/ৌ/g, "ৌ");
+            line = reArrangeUni(line);
+            for (var k in u2b_map) line = line.split(k).join(u2b_map[k]);
+            return line;
+        }
+
+        // ===== Bijoy → Unicode =====
+        var b2u_map = {
+            "i¨": "র\u200c্য", "ª¨": "্র্য",
+            "°": "ক্ক", "±": "ক্ট", "³": "ক্ত", "K¡": "ক্ব", "¯Œ": "স্ক্র", "µ": "ক্র", "K¬": "ক্ল", "¶": "ক্ষ", "ÿ": "ক্ষ", "·": "ক্স",
+            "¸": "গু", "»": "গ্ধ", "Mœ": "গ্ন", "M¥": "গ্ম", "M­": "গ্ল",
+            "¼": "ঙ্ক", "•¶": "ঙ্ক্ষ", "•L": "ঙ্খ", "½": "ঙ্গ", "•N": "ঙ্ঘ", "•": "ক্স",
+            "\u201cP": "চ্চ", "\u201cQ": "চ্ছ", "\u201cQ¡": "চ্ছ্ব", "\u201cT": "চ্ঞ",
+            "¾¡": "জ্জ্ব", "¾": "জ্জ", "À": "জ্ঝ", "Á": "জ্ঞ", "R¡": "জ্ব",
+            "Â": "ঞ্চ", "Ã": "ঞ্ছ", "Ä": "ঞ্জ", "Å": "ঞ্ঝ",
+            "Æ": "ট্ট", "U¡": "ট্ব", "U¥": "ট্ম", "Ç": "ড্ড",
+            "È": "ণ্ট", "É": "ণ্ঠ", "Ê": "ণ্ড", "Y^": "ণ্ব",
+            "Ý": "ন্স", "š'": "ন্তু", "›U": "ন্ট", "Ú": "ন্ঠ", "Û": "ন্ড", "š—": "ন্ত", "š¿": "ন্ত্র", "š'": "ন্থ", "›`": "ন্দ", "›Ø": "ন্দ্ব", "Ü": "ন্ধ", "bœ": "ন্ন", "š^": "ন্ব", "b¥": "ন্ম", "š—¡": "ন্ত্ব",
+            "Ë": "ত্ত", "Ë¡": "ত্ত্ব", "Ì": "ত্থ", "Zœ": "ত্ন", "Z¥": "ত্ম", "Z¡": "ত্ব", "Î": "ত্র", "_¡": "থ্ব",
+            "¯¿": "স্ত্র",
+            "˜M": "দ্গ", "˜N": "দ্ঘ", "Ï": "দ্দ", "×": "দ্ধ", "Ø": "দ্ব", "™¢": "দ্ভ", "Ù": "দ্ম",
+            "aŸ": "ধ্ব", "a¥": "ধ্ম",
+            "Þ": "প্ট", "ß": "প্ত", "cœ": "প্ন", "à": "প্প", "c­": "প্ল", "á": "প্স", "d¬": "ফ্ল",
+            "â": "ব্জ", "ã": "ব্দ", "ä": "ব্ধ", "eŸ": "ব্ব", "e­": "ব্ল", "å": "ভ্র",
+            "gœ": "ম্ন", "¤ú": "ম্প", "ç": "ম্ফ", "¤^": "ম্ব", "¤¢": "ম্ভ", "¤£": "ম্ভ্র", "¤§": "ম্ম", "¤­": "ম্ল",
+            "i\u201c": "রু", "iæ": "রু", "iƒ": "রূ",
+            "é": "ল্ক", "ê": "ল্গ", "ë": "ল্ট", "ì": "ল্ড", "í": "ল্প", "î": "ল্ফ", "j¦": "ল্ব", "j¥": "ল্ম", "jø": "ল্ল",
+            "ï": "শু", "ð": "শ্চ", "kœ": "শ্ন", "k¦": "শ্ব", "k¥": "শ্ম", "kø": "শ্ল", "k­": "শ্ল",
+            "®\u2039": "ষ্ক", "®Œ": "ষ্ক্র", "ó": "ষ্ট", "ô": "ষ্ঠ", "ò": "ষ্ণ", "®ú": "ষ্প", "õ": "ষ্ফ", "®§": "ষ্ম",
+            "¯\u2039": "স্ক", "÷": "স্ট", "ö": "স্খ", "¯—": "স্ত", "¯'": "স্তু", "¯¿": "স্ত্র", "¯'": "স্থ", "mœ": "স্ন", "¯ú": "স্প", "ù": "স্ফ", "¯^": "স্ব", "¯§": "স্ম", "¯­": "স্ল",
+            "û": "হু", "nè": "হ্ণ", "ý": "হ্ন", "þ": "হ্ম", "n¬": "হ্ল", "ü": "হৃ",
+            "©": "র্", "Av": "আ",
+            "A": "অ", "B": "ই", "C": "ঈ", "D": "উ", "E": "ঊ", "F": "ঋ", "G": "এ", "H": "ঐ", "I": "ও", "J": "ঔ",
+            "K": "ক", "L": "খ", "M": "গ", "N": "ঘ", "O": "ঙ", "P": "চ", "Q": "ছ", "R": "জ", "S": "ঝ", "T": "ঞ",
+            "U": "ট", "V": "ঠ", "W": "ড", "X": "ঢ", "Y": "ণ", "Z": "ত", "_": "থ", "`": "দ", "a": "ধ", "b": "ন",
+            "c": "প", "d": "ফ", "e": "ব", "f": "ভ", "g": "ম", "h": "য", "i": "র", "j": "ল", "k": "শ", "l": "ষ", "m": "স", "n": "হ",
+            "o": "ড়", "p": "ঢ়", "q": "য়", "r": "ৎ",
+            "0": "০", "1": "১", "2": "২", "3": "৩", "4": "৪", "5": "৫", "6": "৬", "7": "৭", "8": "৮", "9": "৯",
+            "v": "া", "w": "ি", "x": "ী", "y": "ু", "z": "ু", "~": "ূ", "„": "ৃ", "…": "ৃ", "‡": "ে", "†": "ে", "‰": "ৈ", "Š": "ৗ",
+            "s": "ং", "t": "ঃ", "u": "ঁ",
+            "ª": "্র", "Ö": "্র", "«": "্র", "¨": "্য", "&": "্", "|": "।",
+            "Ô": "'", "Õ": "'", "Ò": "\u201c", "Ó": "\u201d"
+        };
+
+        function reArrangeConverted(str) {
+            for (var i = 0; i < str.length; i++) {
+                if (i > 0 && str[i] === "\u09CD" && (IsBanglaKar(str[i - 1]) || IsBanglaNukta(str[i - 1])) && i < str.length - 1) {
+                    str = str.slice(0, i - 1) + str[i] + str[i + 1] + str[i - 1] + str.slice(i + 2);
+                }
+                if (i > 0 && i < str.length - 1 && str[i] === "\u09CD" && str[i - 1] === "\u09B0" && (i < 2 || str[i - 2] !== "\u09CD") && IsBanglaKar(str[i + 1])) {
+                    str = str.slice(0, i - 1) + str[i + 1] + str[i - 1] + str[i] + str.slice(i + 2);
+                }
+            }
+            return str;
+        }
+
+        function convertBijoyToUni(line) {
+            if (!line) return "";
+            for (var k in b2u_map) line = line.split(k).join(b2u_map[k]);
+            return reArrangeConverted(line);
+        }
+
+        // ===== UI wiring =====
+        document.getElementById('uni-to-bijoy-btn').onclick = function () {
+            var inp = document.getElementById('unicode-input').value;
+            document.getElementById('bijoy-output').value = convertUniToBijoy(inp);
+        };
+
+        document.getElementById('bijoy-to-uni-btn').onclick = function () {
+            var inp = document.getElementById('bijoy-output').value;
+            document.getElementById('unicode-input').value = convertBijoyToUni(inp);
+        };
+
+        function copyText(id) {
+            var el = document.getElementById(id);
+            el.select();
+            document.execCommand('copy');
+            var t = document.getElementById('toast');
+            t.classList.add('show');
+            setTimeout(function () { t.classList.remove('show'); }, 2000);
+        }
+
+        function clearText(id) {
+            document.getElementById(id).value = '';
+        }
+    </script>
 </body>
 
 </html>
