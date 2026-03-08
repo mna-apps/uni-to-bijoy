@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ইউনিকোড থেকেবিজয় টেক্সট কনভার্টার - ১০০% কার্যকর</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">আবিষ্কার.কম</div>
+        <nav>
+            <ul>
+                <li><a href="https://www.abswer.com">Home</a></li>
+                <li><a href="https://www.abswer.com/books">Books</a></li>
+                <li><a href="https://www.abswer.com/about">About</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <button class="login-btn">Login</button>
+            <button class="register-btn">Join Now</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>ইউনিকোড থেকে বিজয় টেক্সট কনভার্টার</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 20px;">The Largest e-Learning Platform</p>
+
+        <div class="converter-section">
+            <div class="textarea-wrapper">
+                <div class="label-bar">
+                    <span>ইউনিকোড কিবোর্ডর লেখা এখানে লিখুন</span>
+                </div>
+                <textarea id="unicode-input" placeholder="এখানে ইউনিকোড টেক্সট পেস্ট করুন..."></textarea>
+                <div class="utility-bar">
+                    <button class="btn-util" onclick="copyText('unicode-input')">
+                        <i>📋</i> Copy
+                    </button>
+                    <button class="btn-util" onclick="clearText('unicode-input')">
+                        <i>🗑️</i> Clear
+                    </button>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn-convert" id="uni-to-bijoy">ইউনিকোড থেকে বিজয় ↓</button>
+                <button class="btn-convert" id="bijoy-to-uni">বিজয় থেকে ইউনিকোড ↑</button>
+            </div>
+
+            <div class="textarea-wrapper">
+                <div class="label-bar">
+                    <span>বিজয় কিবোর্ডর লেখা এখানে পাবেন</span>
+                </div>
+                <textarea id="bijoy-output" placeholder="এখানে বিজয় টেক্সট দেখা যাবে..."></textarea>
+                <div class="utility-bar">
+                    <button class="btn-util" onclick="copyText('bijoy-output')">
+                        <i>📋</i> Copy
+                    </button>
+                    <button class="btn-util" onclick="clearText('bijoy-output')">
+                        <i>🗑️</i> Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>All Right Reserved &copy; 2026 Abswer.com - The Largest e-Learning Platform</p>
+    </footer>
+
+    <script type="module" src="/main.js"></script>
+</body>
+
+</html>

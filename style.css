@@ -1,0 +1,225 @@
+@font-face {
+    font-family: 'SolaimanLipi';
+    src: url('/fonts/SolaimanLipi.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'SutonnyMJ';
+    src: url('/fonts/SutonnyMJ.ttf') format('truetype');
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #00a082;
+    --primary-hover: #008a6f;
+    --bg-color: #f4f7f6;
+    --card-bg: #ffffff;
+    --text-color: #333333;
+    --border-color: #e1e4e8;
+    --header-height: 70px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Hind Siliguri', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+header {
+    background-color: #fff;
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 50px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+}
+
+nav ul li {
+    margin-left: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: var(--primary-color);
+}
+
+.auth-buttons button {
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+.login-btn {
+    background: transparent;
+    color: var(--text-color);
+}
+
+.register-btn {
+    background: var(--primary-color);
+    color: #fff;
+}
+
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--text-color);
+    font-size: 1.8rem;
+}
+
+.converter-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.textarea-wrapper {
+    position: relative;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.label-bar {
+    background: #f8f9fa;
+    padding: 8px 15px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+textarea {
+    width: 100%;
+    height: 200px;
+    padding: 15px;
+    border: none;
+    outline: none;
+    resize: vertical;
+    font-size: 1.2rem;
+}
+
+#unicode-input {
+    font-family: 'SolaimanLipi', 'Hind Siliguri', sans-serif;
+}
+
+#bijoy-output {
+    font-family: 'SutonnyMJ', serif;
+    font-size: 1.8rem;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 10px 0;
+}
+
+.btn-convert {
+    padding: 12px 25px;
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.1s;
+    font-size: 1rem;
+}
+
+.btn-convert:hover {
+    background: var(--primary-hover);
+}
+
+.btn-convert:active {
+    transform: scale(0.98);
+}
+
+.utility-bar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn-util {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background 0.3s;
+}
+
+.btn-util:hover {
+    background: #e9ecef;
+}
+
+footer {
+    text-align: center;
+    padding: 40px 0;
+    color: #888;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+    .controls {
+        flex-direction: column;
+    }
+
+    header {
+        padding: 0 20px;
+    }
+
+    .container {
+        margin: 20px;
+        padding: 20px;
+    }
+}
