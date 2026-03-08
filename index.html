@@ -390,7 +390,7 @@
         // ============================================================
         //  Bengali helper functions
         // ============================================================
-        function isPreKar(c) { return c === '\u09BF' || c === '\u09CB' || c === '\u09C8'; }  // ি ো ৈ  (pre-positioned in Bijoy)
+        function isPreKar(c) { return c === '\u09BF' || c === '\u09C7' || c === '\u09C8'; }  // ি ে ৈ → pre-positioned in Bijoy ৈ  (pre-positioned in Bijoy)
         function isBanjonborno(c) {
             return '\u0995\u0996\u0997\u0998\u0999\u099A\u099B\u099C\u099D\u099E\u099F\u09A0\u09A1\u09A2\u09A3\u09A4\u09A5\u09A6\u09A7\u09A8\u09AA\u09AB\u09AC\u09AD\u09AE\u09AF\u09B0\u09B2\u09B6\u09B7\u09B8\u09B9\u09DC\u09DD\u09DF\u09CE'.indexOf(c) >= 0;
         }
@@ -667,15 +667,10 @@
         function convertUniToBijoy(text) {
             if (!text) return '';
             // Normalize ো and ৌ compositions
-            text = text.replace(/\u09CB/g, '\u09C7\u09BE');   // ো → ে + া
-            text = text.replace(/\u09CC/g, '\u09C7\u09CC');   // ৌ — keep ে separate for pre-kar
-            // Actually for ৌ: it's ে+ৌ in Bijoy rendering: ‡ + Š
-            // Simpler: replace ৌ with ে+ো-marker so ে gets moved by reArrange
-            text = text.replace(/\u09CC/g, '\u09C7\ufffe');   // placeholder for ৌ-second-part
+            text = text.replace(/\u09CB/g, '\u09C7\u09BE');   // ো → ে + া (ে is pre-kar, gets moved before consonant)
+            text = text.replace(/\u09CC/g, '\u09C7\u09D7');   // ৌ → ে + ৗ (ে is pre-kar, ৗ stays after)
             text = reArrangeUni(text);
             text = applyMap(u2bRaw, text);
-            text = text.replace(/\uffff/g, '\x8a');  // restore ৌ second part Š
-            text = text.replace(/\ufffe/g, '\x8a');  // ৌ second part
             return text;
         }
 
