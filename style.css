@@ -1,11 +1,11 @@
 @font-face {
     font-family: 'SolaimanLipi';
-    src: url('/fonts/SolaimanLipi.ttf') format('truetype');
+    src: url('fonts/SolaimanLipi.ttf') format('truetype');
 }
 
 @font-face {
     font-family: 'SutonnyMJ';
-    src: url('/fonts/SutonnyMJ.ttf') format('truetype');
+    src: url('fonts/SutonnyMJ.ttf') format('truetype');
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
