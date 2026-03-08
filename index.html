@@ -47,10 +47,10 @@
 
         .logo span {
             color: #2d3748;
-            font-size: .85rem;
+            font-size: .8rem;
             display: block;
             font-weight: 400;
-            line-height: 1;
+            line-height: 1.1;
         }
 
         nav ul {
@@ -90,7 +90,7 @@
             font-weight: 600;
             font-size: .88rem;
             transition: all .25s;
-            font-family: 'Hind Siliguri', sans-serif;
+            font-family: inherit;
         }
 
         .btn-login:hover {
@@ -107,7 +107,7 @@
             font-weight: 600;
             font-size: .88rem;
             transition: all .25s;
-            font-family: 'Hind Siliguri', sans-serif;
+            font-family: inherit;
         }
 
         .btn-join:hover {
@@ -148,10 +148,6 @@
             overflow: hidden;
         }
 
-        .textarea-wrapper {
-            position: relative;
-        }
-
         .label-bar {
             background: #f7fdfb;
             padding: 10px 18px;
@@ -164,12 +160,16 @@
             gap: 8px;
         }
 
-        .label-bar .dot {
+        .dot {
             width: 8px;
             height: 8px;
             background: #00a082;
             border-radius: 50%;
             display: inline-block;
+        }
+
+        .dot.orange {
+            background: #e67e22;
         }
 
         textarea {
@@ -191,7 +191,7 @@
 
         #bijoy-output {
             font-family: 'SutonnyMJ', 'Shonar Bangla', serif;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
         }
 
         .utility-bar {
@@ -212,7 +212,7 @@
             font-size: .82rem;
             color: #555;
             transition: all .2s;
-            font-family: 'Hind Siliguri', sans-serif;
+            font-family: inherit;
         }
 
         .btn-util:hover {
@@ -241,7 +241,7 @@
             cursor: pointer;
             font-size: 1rem;
             transition: all .25s;
-            font-family: 'Hind Siliguri', sans-serif;
+            font-family: inherit;
             box-shadow: 0 3px 10px rgba(0, 160, 130, .25);
         }
 
@@ -303,7 +303,6 @@
             }
         }
 
-        /* Success toast */
         #toast {
             position: fixed;
             bottom: 30px;
@@ -329,10 +328,7 @@
 <body>
 
     <header>
-        <div class="logo">
-            আবিষ্কার.কম
-            <span>ABSWER.COM</span>
-        </div>
+        <div class="logo">আবিষ্কার.কম<span>ABSWER.COM</span></div>
         <nav>
             <ul>
                 <li><a href="https://www.abswer.com">Home</a></li>
@@ -353,7 +349,6 @@
         </div>
 
         <div class="container">
-            <!-- Unicode Input -->
             <div class="textarea-wrapper">
                 <div class="label-bar">
                     <span class="dot"></span>
@@ -366,16 +361,14 @@
                 </div>
             </div>
 
-            <!-- Controls -->
             <div class="controls">
                 <button class="btn-convert" id="uni-to-bijoy-btn">ইউনিকোড থেকে বিজয় ↓</button>
                 <button class="btn-convert secondary" id="bijoy-to-uni-btn">বিজয় থেকে ইউনিকোড ↑</button>
             </div>
 
-            <!-- Bijoy Output -->
             <div class="textarea-wrapper">
                 <div class="label-bar">
-                    <span class="dot" style="background:#e67e22"></span>
+                    <span class="dot orange"></span>
                     বিজয় টেক্সট (SutonnyMJ / Bijoy keyboard)
                 </div>
                 <textarea id="bijoy-output" placeholder="এখানে বিজয় টেক্সট দেখা যাবে..."></textarea>
@@ -394,141 +387,496 @@
     <div id="toast">✅ Copied!</div>
 
     <script>
-        // ===== common helpers =====
-        function IsBanglaPreKar(c) { return c === "ি" || c === "ে" || c === "ৈ"; }
-        function IsBanglaBanjonborno(c) { return "কখগঘঙচছজঝঞটঠডঢণতথদধনপফবভমযরলশষসহড়ঢ়য়ৎ".includes(c); }
-        function IsBanglaHalant(c) { return c === "্"; }
-        function IsBanglaKar(c) { return "ািীুূৃেৈোৌ".includes(c); }
-        function IsBanglaNukta(c) { return c === "়"; }
+        // ============================================================
+        //  Bengali helper functions
+        // ============================================================
+        function isPreKar(c) { return c === '\u09BF' || c === '\u09CB' || c === '\u09C8'; }  // ি ো ৈ  (pre-positioned in Bijoy)
+        function isBanjonborno(c) {
+            return '\u0995\u0996\u0997\u0998\u0999\u099A\u099B\u099C\u099D\u099E\u099F\u09A0\u09A1\u09A2\u09A3\u09A4\u09A5\u09A6\u09A7\u09A8\u09AA\u09AB\u09AC\u09AD\u09AE\u09AF\u09B0\u09B2\u09B6\u09B7\u09B8\u09B9\u09DC\u09DD\u09DF\u09CE'.indexOf(c) >= 0;
+        }
+        function isHalant(c) { return c === '\u09CD'; }  // ্
+        function isKar(c) {
+            return '\u09BE\u09BF\u09C0\u09C1\u09C2\u09C3\u09C7\u09C8\u09CB\u09CC'.indexOf(c) >= 0;
+        }
+        function isNukta(c) { return c === '\u09BC'; }
 
-        // ===== Unicode → Bijoy =====
-        var u2b_map = {
-            "।": "|", "'": "Ô", "'": "Õ", "\u201c": "Ò", "\u201d": "Ó",
-            "্র্য": "ª¨", "র\u200c্য": "i¨",
-            "ক্ক": "°", "ক্ট": "±", "ক্ত": "³", "ক্ব": "K¡", "স্ক্র": "¯Œ", "ক্র": "µ", "ক্ল": "K¬", "ক্ষ": "¶", "ক্স": "·",
-            "গু": "¸", "গ্ধ": "»", "গ্ন": "Mœ", "গ্ম": "M¥", "গ্ল": "M­", "গ্রু": "Mªy",
-            "ঙ্ক": "¼", "ঙ্ক্ষ": "•¶", "ঙ্খ": "•L", "ঙ্গ": "½", "ঙ্ঘ": "•N",
-            "চ্চ": "\u201cP", "চ্ছ": "\u201cQ", "চ্ছ্ব": "\u201cQ¡", "চ্ঞ": "\u201cT",
-            "জ্জ্ব": "¾¡", "জ্জ": "¾", "জ্ঝ": "À", "জ্ঞ": "Á", "জ্ব": "R¡",
-            "ঞ্চ": "Â", "ঞ্ছ": "Ã", "ঞ্জ": "Ä", "ঞ্ঝ": "Å",
-            "ট্ট": "Æ", "ট্ব": "U¡", "ট্ম": "U¥", "ড্ড": "Ç",
-            "ণ্ট": "È", "ণ্ঠ": "É", "ণ্ড": "Ê", "ণ্ব": "Y^",
-            "ন্স": "Ý", "ন্তু": "š'", "ন্ট": "›U", "ন্ঠ": "Ú", "ন্ড": "Û", "ন্ত্র": "š¿", "ন্ত": "š—", "ন্থ": "š'", "ন্দ": "›`", "ন্দ্ব": "›Ø", "ন্ধ": "Ü", "ন্ন": "bœ", "ন্ব": "š^", "ন্ম": "b¥",
-            "ত্ত": "Ë", "ত্ত্ব": "Ë¡", "ত্থ": "Ì", "ত্ন": "Zœ", "ত্ম": "Z¥", "ত্ব": "Z¡", "ত্র": "Î",
-            "স্ত্র": "¯¿", "ন্ত্ব": "š—¡", "থ্ব": "_¡",
-            "দ্গ": "˜M", "দ্ঘ": "˜N", "দ্দ": "Ï", "দ্ধ": "×", "দ্ব": "Ø", "দ্ভ": "™¢", "দ্ম": "Ù", "দ্রু": "`ª\u201c",
-            "ধ্ব": "aŸ", "ধ্ম": "a¥",
-            "প্ট": "Þ", "প্ত": "ß", "প্ন": "cœ", "প্প": "à", "প্ল": "c­", "প্স": "á", "ফ্ল": "d¬",
-            "ব্জ": "â", "ব্দ": "ã", "ব্ধ": "ä", "ব্ব": "eŸ", "ব্ল": "e­", "ভ্র": "å",
-            "ম্ন": "gœ", "ম্প": "¤ú", "ম্ফ": "ç", "ম্ব": "¤^", "ম্ভ": "¤¢", "ম্ভ্র": "¤£", "ম্ম": "¤§", "ম্ল": "¤­",
-            "রু": "i\u201c", "রূ": "iƒ",
-            "ল্ক": "é", "ল্গ": "ê", "ল্ট": "ë", "ল্ড": "ì", "ল্প": "í", "ল্ফ": "î", "ল্ব": "j¦", "ল্ম": "j¥", "ল্ল": "jø",
-            "শু": "ï", "শ্চ": "ð", "শ্ন": "kœ", "শ্ব": "k¦", "শ্ম": "k¥", "শ্ল": "kø",
-            "ষ্ক": "®\u2039", "ষ্ক্র": "®Œ", "ষ্ট": "ó", "ষ্ঠ": "ô", "ষ্ণ": "ò", "ষ্প": "®ú", "ষ্ফ": "õ", "ষ্ম": "®§",
-            "স্ক": "¯\u2039", "স্ট": "÷", "স্খ": "ö", "স্ত": "¯—", "স্তু": "¯'", "স্থ": "¯'", "স্ন": "mœ", "স্প": "¯ú", "স্ফ": "ù", "স্ব": "¯^", "স্ম": "¯§", "স্ল": "¯­",
-            "হু": "û", "হ্ণ": "nè", "হ্ন": "ý", "হ্ম": "þ", "হ্ল": "n¬", "হৃ": "ü",
-            "র্": "©", "্র": "«", "্য": "¨", "্": "&",
-            "আ": "Av", "অ": "A", "ই": "B", "ঈ": "C", "উ": "D", "ঊ": "E", "ঋ": "F", "এ": "G", "ঐ": "H", "ও": "I", "ঔ": "J",
-            "ক": "K", "খ": "L", "গ": "M", "ঘ": "N", "ঙ": "O", "চ": "P", "ছ": "Q", "জ": "R", "ঝ": "S", "ঞ": "T",
-            "ট": "U", "ঠ": "V", "ড": "W", "ঢ": "X", "ণ": "Y", "ত": "Z", "থ": "_", "দ": "`", "ধ": "a", "ন": "b",
-            "প": "c", "ফ": "d", "ব": "e", "ভ": "f", "ম": "g", "য": "h", "র": "i", "ল": "j", "শ": "k", "ষ": "l", "স": "m", "হ": "n",
-            "ড়": "o", "ঢ়": "p", "য়": "q", "ৎ": "r",
-            "০": "0", "১": "1", "২": "2", "৩": "3", "৪": "4", "৫": "5", "৬": "6", "৭": "7", "৮": "8", "৯": "9",
-            "া": "v", "ি": "w", "ী": "x", "ু": "y", "ূ": "~", "ৃ": "…", "ে": "‡", "ৈ": "‰", "ৗ": "Š",
-            "ং": "s", "ঃ": "t", "ঁ": "u"
-        };
-
+        // ============================================================
+        // Re-arrange string: move pre-kars (ি ে ৈ) and handle reph (র্)
+        // ============================================================
         function reArrangeUni(str) {
+            var out = str;
             var barrier = 0;
-            for (var i = 0; i < str.length; i++) {
-                if (IsBanglaPreKar(str[i])) {
+            for (var i = 0; i < out.length; i++) {
+                var ch = out[i];
+                // --- Pre-kar: move before the full conjunct it belongs to ---
+                if (isPreKar(ch)) {
                     var j = 1;
-                    while (i - j >= 0 && IsBanglaBanjonborno(str[i - j])) {
-                        if (i - j <= barrier) break;
-                        if (i - j - 1 >= 0 && IsBanglaHalant(str[i - j - 1])) j += 2; else break;
-                    }
-                    str = str.slice(0, i - j) + str[i] + str.slice(i - j, i) + str.slice(i + 1);
-                    barrier = i + 1; continue;
-                }
-                if (i < str.length - 1 && IsBanglaHalant(str[i]) && str[i - 1] === "র" && (i < 2 || !IsBanglaHalant(str[i - 2]))) {
-                    var j = 1, fk = 0;
-                    while (true) {
-                        if (i + j < str.length - 1 && IsBanglaBanjonborno(str[i + j]) && IsBanglaHalant(str[i + j + 1])) j += 2;
-                        else if (i + j < str.length - 1 && IsBanglaBanjonborno(str[i + j]) && IsBanglaPreKar(str[i + j + 1])) { fk = 1; break; }
+                    while (i - j >= barrier && isBanjonborno(out[i - j])) {
+                        if ((i - j - 1) >= 0 && isHalant(out[i - j - 1])) j += 2;
                         else break;
                     }
-                    str = str.slice(0, i - 1) + str.slice(i + j + 1, i + j + fk + 1) + str.slice(i + 1, i + j + 1) + str[i - 1] + str[i] + str.slice(i + j + fk + 1);
-                    i += j + fk; barrier = i + 1; continue;
+                    out = out.slice(0, i - j) + ch + out.slice(i - j, i) + out.slice(i + 1);
+                    barrier = i + 1;
+                    continue;
+                }
+                // --- Reph (র্): move after full conjunct ---
+                if (isHalant(ch) && i > 0 && out[i - 1] === '\u09B0' && (i < 2 || !isHalant(out[i - 2]))) {
+                    var j = 1; var fk = 0;
+                    for (; ;) {
+                        var ni = i + j;
+                        if (ni < out.length - 1 && isBanjonborno(out[ni]) && isHalant(out[ni + 1])) { j += 2; }
+                        else if (ni < out.length - 1 && isBanjonborno(out[ni]) && isPreKar(out[ni + 1])) { fk = 1; break; }
+                        else break;
+                    }
+                    out = out.slice(0, i - 1)
+                        + out.slice(i + j + 1, i + j + 1 + fk)
+                        + out.slice(i + 1, i + j + 1)
+                        + '\u09B0' + '\u09CD'
+                        + out.slice(i + j + 1 + fk);
+                    i += j + fk; barrier = i + 1;
+                    continue;
                 }
             }
-            return str;
+            return out;
         }
 
-        function convertUniToBijoy(line) {
-            if (!line) return "";
-            line = line.replace(/ো/g, "ো").replace(/ৌ/g, "ৌ");
-            line = reArrangeUni(line);
-            for (var k in u2b_map) line = line.split(k).join(u2b_map[k]);
-            return line;
+        // ============================================================
+        // Unicode → Bijoy map (conjuncts listed first, longer keys first)
+        // ============================================================
+        var u2bRaw = [
+            // special punctuation
+            ['\u0964', '|'],  // ।
+            ['\u2018', '\xd4'], ['\u2019', '\xd5'],
+            ['\u201c', '\xd2'], ['\u201d', '\xd3'],
+            // 4-char conjuncts
+            ['\u09B0\u200C\u09CD\u09AF', 'i\xa8'],     // র‌্য
+            ['\u09CD\u09B0\u09CD\u09AF', '\xaa\xa8'],  // ্র্য
+            ['\u0995\u09CD\u09B7\u09BF', '\x76\xb6'],  // ক্ষি  (ি pre-positioned)
+            // 3-char conjuncts
+            ['\u09B8\u09CD\u0995\u09CD\u09B0', '\xaf\x8c'], // স্ক্র
+            ['\u099A\u09CD\u099B\u09CD\u09AC', '\"Q\xa1'],   // চ্ছ্ব
+            ['\u099C\u09CD\u099C\u09CD\u09AC', '\xbe\xa1'],  // জ্জ্ব
+            ['\u09A4\u09CD\u09A4\u09CD\u09AC', '\xcb\xa1'],  // ত্ত্ব
+            ['\u09A8\u09CD\u09A4\u09CD\u09AC', '\x9a\x97\xa1'], // ন্ত্ব
+            ['\u09A6\u09CD\u09B0\u09C1', '`\xaa"'],    // দ্রু
+            ['\u0997\u09CD\u09B0\u09C1', 'M\xaa\x79'], // গ্রু
+            // 2-char conjuncts
+            ['\u0995\u09CD\u0995', '\xb0'],  // ক্ক
+            ['\u0995\u09CD\u099F', '\xb1'],  // ক্ট
+            ['\u0995\u09CD\u09A4', '\xb3'],  // ক্ত
+            ['\u0995\u09CD\u09AC', 'K\xa1'], // ক্ব
+            ['\u0995\u09CD\u09B0', '\xb5'],  // ক্র
+            ['\u0995\u09CD\u09B2', 'K\xac'], // ক্ল
+            ['\u0995\u09CD\u09B7', '\xb6'],  // ক্ষ
+            ['\u0995\u09CD\u09B8', '\xb7'],  // ক্স
+            ['\u0997\u09C1', '\xb8'],        // গু
+            ['\u0997\u09CD\u09A7', '\xbb'],  // গ্ধ
+            ['\u0997\u09CD\u09A8', 'M\x8c'], // গ্ন
+            ['\u0997\u09CD\u09AE', 'M\xa5'], // গ্ম
+            ['\u0997\u09CD\u09B2', 'M\xad'], // গ্ল
+            ['\u0999\u09CD\u0995', '\xbc'],  // ঙ্ক
+            ['\u0999\u09CD\u0995\u09CD\u09B7', '\x95\xb6'], // ঙ্ক্ষ
+            ['\u0999\u09CD\u0996', '\x95L'], // ঙ্খ
+            ['\u0999\u09CD\u0997', '\xbd'],  // ঙ্গ
+            ['\u0999\u09CD\u0998', '\x95N'], // ঙ্ঘ
+            ['\u099A\u09CD\u099A', '"P'],    // চ্চ
+            ['\u099A\u09CD\u099B', '"Q'],    // চ্ছ
+            ['\u099A\u09CD\u099E', '"T'],    // চ্ঞ
+            ['\u099C\u09CD\u099C', '\xbe'],  // জ্জ
+            ['\u099C\u09CD\u099D', '\xc0'],  // জ্ঝ
+            ['\u099C\u09CD\u099E', '\xc1'],  // জ্ঞ
+            ['\u099C\u09CD\u09AC', 'R\xa1'], // জ্ব
+            ['\u099E\u09CD\u099A', '\xc2'],  // ঞ্চ
+            ['\u099E\u09CD\u099B', '\xc3'],  // ঞ্ছ
+            ['\u099E\u09CD\u099C', '\xc4'],  // ঞ্জ
+            ['\u099E\u09CD\u099D', '\xc5'],  // ঞ্ঝ
+            ['\u099F\u09CD\u099F', '\xc6'],  // ট্ট
+            ['\u099F\u09CD\u09AC', 'U\xa1'], // ট্ব
+            ['\u099F\u09CD\u09AE', 'U\xa5'], // ট্ম
+            ['\u09A1\u09CD\u09A1', '\xc7'],  // ড্ড
+            ['\u09A3\u09CD\u099F', '\xc8'],  // ণ্ট
+            ['\u09A3\u09CD\u09A0', '\xc9'],  // ণ্ঠ
+            ['\u09A3\u09CD\u09A1', '\xca'],  // ণ্ড
+            ['\u09A3\u09CD\u09AC', 'Y^'],    // ণ্ব
+            ['\u09A8\u09CD\u09B8', '\xdd'],  // ন্স
+            ['\u09A8\u09CD\u09A4\u09C1', '\x9a\x92'], // ন্তু
+            ['\u09A8\u09CD\u099F', '\x9bU'], // ন্ট
+            ['\u09A8\u09CD\u09A0', '\xda'],  // ন্ঠ
+            ['\u09A8\u09CD\u09A1', '\xdb'],  // ন্ড
+            ['\u09A8\u09CD\u09A4\u09CD\u09B0', '\x9a\xbf'], // ন্ত্র
+            ['\u09A8\u09CD\u09A4', '\x9a\x97'], // ন্ত
+            ['\u09A8\u09CD\u09A5', '\x9a\x91'], // ন্থ
+            ['\u09A8\u09CD\u09A6', '\x9b`'], // ন্দ
+            ['\u09A8\u09CD\u09A6\u09CD\u09AC', '\x9b\xd8'], // ন্দ্ব
+            ['\u09A8\u09CD\u09A7', '\xdc'],  // ন্ধ
+            ['\u09A8\u09CD\u09A8', 'b\x8c'], // ন্ন
+            ['\u09A8\u09CD\u09AC', '\x9a^'], // ন্ব
+            ['\u09A8\u09CD\u09AE', 'b\xa5'], // ন্ম
+            ['\u09A4\u09CD\u09A4', '\xcb'],  // ত্ত
+            ['\u09A4\u09CD\u09A5', '\xcc'],  // ত্থ
+            ['\u09A4\u09CD\u09A8', 'Z\x8c'], // ত্ন
+            ['\u09A4\u09CD\u09AE', 'Z\xa5'], // ত্ম
+            ['\u09A4\u09CD\u09AC', 'Z\xa1'], // ত্ব
+            ['\u09A4\u09CD\u09B0', '\xce'],  // ত্র
+            ['\u09B8\u09CD\u09A4\u09CD\u09B0', '\xaf\xbf'], // স্ত্র
+            ['\u09A5\u09CD\u09AC', '_\xa1'], // থ্ব
+            ['\u09A6\u09CD\u0997', '\x98M'], // দ্গ
+            ['\u09A6\u09CD\u0998', '\x98N'], // দ্ঘ
+            ['\u09A6\u09CD\u09A6', '\xcf'],  // দ্দ
+            ['\u09A6\u09CD\u09A7', '\xd7'],  // দ্ধ
+            ['\u09A6\u09CD\u09AB', '\x99\xa2'], // দ্ভ
+            ['\u09A6\u09CD\u09AC', '\xd8'],  // দ্ব
+            ['\u09A6\u09CD\u09AE', '\xd9'],  // দ্ম
+            ['\u09A7\u09CD\u09AC', 'a\x9f'], // ধ্ব
+            ['\u09A7\u09CD\u09AE', 'a\xa5'], // ধ্ম
+            ['\u09AA\u09CD\u099F', '\xde'],  // প্ট
+            ['\u09AA\u09CD\u09A4', '\xdf'],  // প্ত
+            ['\u09AA\u09CD\u09A8', 'c\x8c'], // প্ন
+            ['\u09AA\u09CD\u09AA', '\xe0'],  // প্প
+            ['\u09AA\u09CD\u09B2', 'c\xad'], // প্ল
+            ['\u09AA\u09CD\u09B8', '\xe1'],  // প্স
+            ['\u09AB\u09CD\u09B2', 'd\xac'], // ফ্ল
+            ['\u09AC\u09CD\u099C', '\xe2'],  // ব্জ
+            ['\u09AC\u09CD\u09A6', '\xe3'],  // ব্দ
+            ['\u09AC\u09CD\u09A7', '\xe4'],  // ব্ধ
+            ['\u09AC\u09CD\u09AC', 'e\x9f'], // ব্ব
+            ['\u09AC\u09CD\u09B2', 'e\xad'], // ব্ল
+            ['\u09AD\u09CD\u09B0', '\xe5'],  // ভ্র
+            ['\u09AE\u09CD\u09A8', 'g\x8c'], // ম্ন
+            ['\u09AE\u09CD\u09AA', '\xa4\xfa'], // ম্প
+            ['\u09AE\u09CD\u09AB', '\xe7'],  // ম্ফ
+            ['\u09AE\u09CD\u09AC', '\xa4^'], // ম্ব
+            ['\u09AE\u09CD\u09AD', '\xa4\xa2'], // ম্ভ
+            ['\u09AE\u09CD\u09AD\u09CD\u09B0', '\xa4\xa3'], // ম্ভ্র
+            ['\u09AE\u09CD\u09AE', '\xa4\xa7'], // ম্ম
+            ['\u09AE\u09CD\u09B2', '\xa4\xad'], // ম্ল
+            ['\u09B0\u09C1', 'i"'],          // রু
+            ['\u09B0\u09C2', 'i\x83'],       // রূ
+            ['\u09B2\u09CD\u0995', '\xe9'],  // ল্ক
+            ['\u09B2\u09CD\u0997', '\xea'],  // ল্গ
+            ['\u09B2\u09CD\u099F', '\xeb'],  // ল্ট
+            ['\u09B2\u09CD\u09A1', '\xec'],  // ল্ড
+            ['\u09B2\u09CD\u09AA', '\xed'],  // ল্প
+            ['\u09B2\u09CD\u09AB', '\xee'],  // ল্ফ
+            ['\u09B2\u09CD\u09AC', 'j\xa6'], // ল্ব
+            ['\u09B2\u09CD\u09AE', 'j\xa5'], // ল্ম
+            ['\u09B2\u09CD\u09B2', 'j\xf8'], // ল্ল
+            ['\u09B6\u09C1', '\xef'],        // শু
+            ['\u09B6\u09CD\u099A', '\xf0'],  // শ্চ
+            ['\u09B6\u09CD\u09A8', 'k\x8c'], // শ্ন
+            ['\u09B6\u09CD\u09AC', 'k\xa6'], // শ্ব
+            ['\u09B6\u09CD\u09AE', 'k\xa5'], // শ্ম
+            ['\u09B6\u09CD\u09B2', 'k\xf8'], // শ্ল
+            ['\u09B7\u09CD\u0995', '\xae\x8b'], // ষ্ক
+            ['\u09B7\u09CD\u0995\u09CD\u09B0', '\xae\x8c'], // ষ্ক্র
+            ['\u09B7\u09CD\u099F', '\xf3'],  // ষ্ট
+            ['\u09B7\u09CD\u09A0', '\xf4'],  // ষ্ঠ
+            ['\u09B7\u09CD\u09A3', '\xf2'],  // ষ্ণ
+            ['\u09B7\u09CD\u09AA', '\xae\xfa'], // ষ্প
+            ['\u09B7\u09CD\u09AB', '\xf5'],  // ষ্ফ
+            ['\u09B7\u09CD\u09AE', '\xae\xa7'], // ষ্ম
+            ['\u09B8\u09CD\u0995', '\xaf\x8b'], // স্ক
+            ['\u09B8\u09CD\u099F', '\xf7'],  // স্ট
+            ['\u09B8\u09CD\u0996', '\xf6'],  // স্খ
+            ['\u09B8\u09CD\u09A4', '\xaf\x97'], // স্ত
+            ['\u09B8\u09CD\u09A4\u09C1', '\xaf\x91'], // স্তু
+            ['\u09B8\u09CD\u09A5', '\xaf\x91'], // স্থ
+            ['\u09B8\u09CD\u09A8', 'm\x8c'], // স্ন
+            ['\u09B8\u09CD\u09AA', '\xaf\xfa'], // স্প
+            ['\u09B8\u09CD\u09AB', '\xf9'],  // স্ফ
+            ['\u09B8\u09CD\u09AC', '\xaf^'], // স্ব
+            ['\u09B8\u09CD\u09AE', '\xaf\xa7'], // স্ম
+            ['\u09B8\u09CD\u09B2', '\xaf\xad'], // স্ল
+            ['\u09B9\u09C1', '\xfb'],        // হু
+            ['\u09B9\u09CD\u09A3', 'n\xe8'], // হ্ণ
+            ['\u09B9\u09CD\u09A8', '\xfd'],  // হ্ন
+            ['\u09B9\u09CD\u09AE', '\xfe'],  // হ্ম
+            ['\u09B9\u09CD\u09B2', 'n\xac'], // হ্ল
+            ['\u09B9\u09C3', '\xfc'],        // হৃ
+            // reph must come after processing
+            ['\u09B0\u09CD', '\xa9'],        // র্
+            // vowel signs and halant
+            ['\u09CD\u09B0', '\xab'],        // ্র
+            ['\u09CD\u09AF', '\xa8'],        // ্য
+            ['\u09CD', '&'],                  // ্ (hasanta)
+            // vowels (independent)
+            ['\u0986', 'Av'],  // আ  (must be before অ)
+            ['\u0985', 'A'],   // অ
+            ['\u0987', 'B'],   // ই
+            ['\u0988', 'C'],   // ঈ
+            ['\u0989', 'D'],   // উ
+            ['\u098A', 'E'],   // ঊ
+            ['\u098B', 'F'],   // ঋ
+            ['\u098F', 'G'],   // এ
+            ['\u0990', 'H'],   // ঐ
+            ['\u0993', 'I'],   // ও
+            ['\u0994', 'J'],   // ঔ
+            // consonants
+            ['\u0995', 'K'], ['\u0996', 'L'], ['\u0997', 'M'], ['\u0998', 'N'], ['\u0999', 'O'],
+            ['\u099A', 'P'], ['\u099B', 'Q'], ['\u099C', 'R'], ['\u099D', 'S'], ['\u099E', 'T'],
+            ['\u099F', 'U'], ['\u09A0', 'V'], ['\u09A1', 'W'], ['\u09A2', 'X'], ['\u09A3', 'Y'],
+            ['\u09A4', 'Z'], ['\u09A5', '_'], ['\u09A6', '`'], ['\u09A7', 'a'], ['\u09A8', 'b'],
+            ['\u09AA', 'c'], ['\u09AB', 'd'], ['\u09AC', 'e'], ['\u09AD', 'f'], ['\u09AE', 'g'],
+            ['\u09AF', 'h'], ['\u09B0', 'i'], ['\u09B2', 'j'], ['\u09B6', 'k'], ['\u09B7', 'l'],
+            ['\u09B8', 'm'], ['\u09B9', 'n'],
+            ['\u09DC', 'o'], ['\u09DD', 'p'], ['\u09DF', 'q'], ['\u09CE', 'r'],
+            // digits
+            ['\u09E6', '0'], ['\u09E7', '1'], ['\u09E8', '2'], ['\u09E9', '3'], ['\u09EA', '4'],
+            ['\u09EB', '5'], ['\u09EC', '6'], ['\u09ED', '7'], ['\u09EE', '8'], ['\u09EF', '9'],
+            // vowel signs (kars)
+            ['\u09BE', 'v'],   // া
+            ['\u09BF', 'w'],   // ি
+            ['\u09C0', 'x'],   // ী
+            ['\u09C1', 'y'],   // ু
+            ['\u09C2', '~'],   // ূ
+            ['\u09C3', '\x85'],// ৃ
+            ['\u09C7', '\x87'],// ে
+            ['\u09C8', '\x89'],// ৈ
+            ['\u09CB', 'v'],   // ো — া part (ে handled by pre-kar rearrange)
+            ['\u09CC', 'v'],   // ৌ — া part
+            ['\u09D7', '\x8a'],// ৗ
+            // nasals / visarga / chandrabindu
+            ['\u0982', 's'],   // ং
+            ['\u0983', 't'],   // ঃ
+            ['\u0981', 'u'],   // ঁ
+        ];
+
+        // Pre-process ো (ে+া) and ৌ (ে+ৌ) — normalize to NFC forms
+        // These may come as precomposed or composed, handle both
+        function preprocessUni(s) {
+            // Normalize ো → ে + া  so rearrange can place ে (pre-kar) correctly
+            s = s.replace(/\u09CB/g, '\u09CB');  // keep as-is, handle in map
+            s = s.replace(/\u09CC/g, '\u09CC');
+            return s;
         }
 
-        // ===== Bijoy → Unicode =====
-        var b2u_map = {
-            "i¨": "র\u200c্য", "ª¨": "্র্য",
-            "°": "ক্ক", "±": "ক্ট", "³": "ক্ত", "K¡": "ক্ব", "¯Œ": "স্ক্র", "µ": "ক্র", "K¬": "ক্ল", "¶": "ক্ষ", "ÿ": "ক্ষ", "·": "ক্স",
-            "¸": "গু", "»": "গ্ধ", "Mœ": "গ্ন", "M¥": "গ্ম", "M­": "গ্ল",
-            "¼": "ঙ্ক", "•¶": "ঙ্ক্ষ", "•L": "ঙ্খ", "½": "ঙ্গ", "•N": "ঙ্ঘ", "•": "ক্স",
-            "\u201cP": "চ্চ", "\u201cQ": "চ্ছ", "\u201cQ¡": "চ্ছ্ব", "\u201cT": "চ্ঞ",
-            "¾¡": "জ্জ্ব", "¾": "জ্জ", "À": "জ্ঝ", "Á": "জ্ঞ", "R¡": "জ্ব",
-            "Â": "ঞ্চ", "Ã": "ঞ্ছ", "Ä": "ঞ্জ", "Å": "ঞ্ঝ",
-            "Æ": "ট্ট", "U¡": "ট্ব", "U¥": "ট্ম", "Ç": "ড্ড",
-            "È": "ণ্ট", "É": "ণ্ঠ", "Ê": "ণ্ড", "Y^": "ণ্ব",
-            "Ý": "ন্স", "š'": "ন্তু", "›U": "ন্ট", "Ú": "ন্ঠ", "Û": "ন্ড", "š—": "ন্ত", "š¿": "ন্ত্র", "š'": "ন্থ", "›`": "ন্দ", "›Ø": "ন্দ্ব", "Ü": "ন্ধ", "bœ": "ন্ন", "š^": "ন্ব", "b¥": "ন্ম", "š—¡": "ন্ত্ব",
-            "Ë": "ত্ত", "Ë¡": "ত্ত্ব", "Ì": "ত্থ", "Zœ": "ত্ন", "Z¥": "ত্ম", "Z¡": "ত্ব", "Î": "ত্র", "_¡": "থ্ব",
-            "¯¿": "স্ত্র",
-            "˜M": "দ্গ", "˜N": "দ্ঘ", "Ï": "দ্দ", "×": "দ্ধ", "Ø": "দ্ব", "™¢": "দ্ভ", "Ù": "দ্ম",
-            "aŸ": "ধ্ব", "a¥": "ধ্ম",
-            "Þ": "প্ট", "ß": "প্ত", "cœ": "প্ন", "à": "প্প", "c­": "প্ল", "á": "প্স", "d¬": "ফ্ল",
-            "â": "ব্জ", "ã": "ব্দ", "ä": "ব্ধ", "eŸ": "ব্ব", "e­": "ব্ল", "å": "ভ্র",
-            "gœ": "ম্ন", "¤ú": "ম্প", "ç": "ম্ফ", "¤^": "ম্ব", "¤¢": "ম্ভ", "¤£": "ম্ভ্র", "¤§": "ম্ম", "¤­": "ম্ল",
-            "i\u201c": "রু", "iæ": "রু", "iƒ": "রূ",
-            "é": "ল্ক", "ê": "ল্গ", "ë": "ল্ট", "ì": "ল্ড", "í": "ল্প", "î": "ল্ফ", "j¦": "ল্ব", "j¥": "ল্ম", "jø": "ল্ল",
-            "ï": "শু", "ð": "শ্চ", "kœ": "শ্ন", "k¦": "শ্ব", "k¥": "শ্ম", "kø": "শ্ল", "k­": "শ্ল",
-            "®\u2039": "ষ্ক", "®Œ": "ষ্ক্র", "ó": "ষ্ট", "ô": "ষ্ঠ", "ò": "ষ্ণ", "®ú": "ষ্প", "õ": "ষ্ফ", "®§": "ষ্ম",
-            "¯\u2039": "স্ক", "÷": "স্ট", "ö": "স্খ", "¯—": "স্ত", "¯'": "স্তু", "¯¿": "স্ত্র", "¯'": "স্থ", "mœ": "স্ন", "¯ú": "স্প", "ù": "স্ফ", "¯^": "স্ব", "¯§": "স্ম", "¯­": "স্ল",
-            "û": "হু", "nè": "হ্ণ", "ý": "হ্ন", "þ": "হ্ম", "n¬": "হ্ল", "ü": "হৃ",
-            "©": "র্", "Av": "আ",
-            "A": "অ", "B": "ই", "C": "ঈ", "D": "উ", "E": "ঊ", "F": "ঋ", "G": "এ", "H": "ঐ", "I": "ও", "J": "ঔ",
-            "K": "ক", "L": "খ", "M": "গ", "N": "ঘ", "O": "ঙ", "P": "চ", "Q": "ছ", "R": "জ", "S": "ঝ", "T": "ঞ",
-            "U": "ট", "V": "ঠ", "W": "ড", "X": "ঢ", "Y": "ণ", "Z": "ত", "_": "থ", "`": "দ", "a": "ধ", "b": "ন",
-            "c": "প", "d": "ফ", "e": "ব", "f": "ভ", "g": "ম", "h": "য", "i": "র", "j": "ল", "k": "শ", "l": "ষ", "m": "স", "n": "হ",
-            "o": "ড়", "p": "ঢ়", "q": "য়", "r": "ৎ",
-            "0": "০", "1": "১", "2": "২", "3": "৩", "4": "৪", "5": "৫", "6": "৬", "7": "৭", "8": "৮", "9": "৯",
-            "v": "া", "w": "ি", "x": "ী", "y": "ু", "z": "ু", "~": "ূ", "„": "ৃ", "…": "ৃ", "‡": "ে", "†": "ে", "‰": "ৈ", "Š": "ৗ",
-            "s": "ং", "t": "ঃ", "u": "ঁ",
-            "ª": "্র", "Ö": "্র", "«": "্র", "¨": "্য", "&": "্", "|": "।",
-            "Ô": "'", "Õ": "'", "Ò": "\u201c", "Ó": "\u201d"
-        };
+        // Apply map to string. Keys are applied longest-first to avoid shorter-key shadowing.
+        function applyMap(map, str) {
+            // Sort by key length descending (already ordered above for multi-char, but sort to be safe)
+            var sorted = map.slice().sort(function (a, b) { return b[0].length - a[0].length; });
+            // Build a regex alternation
+            var escaped = sorted.map(function (pair) {
+                return pair[0].replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+            });
+            var re = new RegExp(escaped.join('|'), 'g');
+            var lookup = {};
+            sorted.forEach(function (pair) { lookup[pair[0]] = pair[1]; });
+            return str.replace(re, function (m) { return lookup[m] !== undefined ? lookup[m] : m; });
+        }
+
+        function convertUniToBijoy(text) {
+            if (!text) return '';
+            // Normalize ো and ৌ compositions
+            text = text.replace(/\u09CB/g, '\u09C7\u09BE');   // ো → ে + া
+            text = text.replace(/\u09CC/g, '\u09C7\u09CC');   // ৌ — keep ে separate for pre-kar
+            // Actually for ৌ: it's ে+ৌ in Bijoy rendering: ‡ + Š
+            // Simpler: replace ৌ with ে+ো-marker so ে gets moved by reArrange
+            text = text.replace(/\u09CC/g, '\u09C7\ufffe');   // placeholder for ৌ-second-part
+            text = reArrangeUni(text);
+            text = applyMap(u2bRaw, text);
+            text = text.replace(/\uffff/g, '\x8a');  // restore ৌ second part Š
+            text = text.replace(/\ufffe/g, '\x8a');  // ৌ second part
+            return text;
+        }
+
+        // ============================================================
+        // Bijoy → Unicode map
+        // ============================================================
+        var b2uRaw = [
+            ['i\xa8', '\u09B0\u200C\u09CD\u09AF'],  // র‌্য
+            ['\xaa\xa8', '\u09CD\u09B0\u09CD\u09AF'],
+            ['\xb0', '\u0995\u09CD\u0995'],
+            ['\xb1', '\u0995\u09CD\u099F'],
+            ['\xb3', '\u0995\u09CD\u09A4'],
+            ['K\xa1', '\u0995\u09CD\u09AC'],
+            ['\xaf\x8c', '\u09B8\u09CD\u0995\u09CD\u09B0'],
+            ['\xb5', '\u0995\u09CD\u09B0'],
+            ['K\xac', '\u0995\u09CD\u09B2'],
+            ['\xb6', '\u0995\u09CD\u09B7'],
+            ['\xff', '\u0995\u09CD\u09B7'],
+            ['\xb7', '\u0995\u09CD\u09B8'],
+            ['\xb8', '\u0997\u09C1'],
+            ['\xbb', '\u0997\u09CD\u09A7'],
+            ['M\x8c', '\u0997\u09CD\u09A8'],
+            ['M\xa5', '\u0997\u09CD\u09AE'],
+            ['M\xad', '\u0997\u09CD\u09B2'],
+            ['\xbc', '\u0999\u09CD\u0995'],
+            ['\x95\xb6', '\u0999\u09CD\u0995\u09CD\u09B7'],
+            ['\x95L', '\u0999\u09CD\u0996'],
+            ['\xbd', '\u0999\u09CD\u0997'],
+            ['\x95N', '\u0999\u09CD\u0998'],
+            ['"P', '\u099A\u09CD\u099A'],
+            ['"Q\xa1', '\u099A\u09CD\u099B\u09CD\u09AC'],
+            ['"Q', '\u099A\u09CD\u099B'],
+            ['"T', '\u099A\u09CD\u099E'],
+            ['\xbe\xa1', '\u099C\u09CD\u099C\u09CD\u09AC'],
+            ['\xbe', '\u099C\u09CD\u099C'],
+            ['\xc0', '\u099C\u09CD\u099D'],
+            ['\xc1', '\u099C\u09CD\u099E'],
+            ['R\xa1', '\u099C\u09CD\u09AC'],
+            ['\xc2', '\u099E\u09CD\u099A'],
+            ['\xc3', '\u099E\u09CD\u099B'],
+            ['\xc4', '\u099E\u09CD\u099C'],
+            ['\xc5', '\u099E\u09CD\u099D'],
+            ['\xc6', '\u099F\u09CD\u099F'],
+            ['U\xa1', '\u099F\u09CD\u09AC'],
+            ['U\xa5', '\u099F\u09CD\u09AE'],
+            ['\xc7', '\u09A1\u09CD\u09A1'],
+            ['\xc8', '\u09A3\u09CD\u099F'],
+            ['\xc9', '\u09A3\u09CD\u09A0'],
+            ['\xca', '\u09A3\u09CD\u09A1'],
+            ['Y^', '\u09A3\u09CD\u09AC'],
+            ['\xdd', '\u09A8\u09CD\u09B8'],
+            ['\x9a\x92', '\u09A8\u09CD\u09A4\u09C1'],
+            ['\x9bU', '\u09A8\u09CD\u099F'],
+            ['\xda', '\u09A8\u09CD\u09A0'],
+            ['\xdb', '\u09A8\u09CD\u09A1'],
+            ['\x9a\x97\xa1', '\u09A8\u09CD\u09A4\u09CD\u09AC'],
+            ['\x9a\xbf', '\u09A8\u09CD\u09A4\u09CD\u09B0'],
+            ['\x9a\x97', '\u09A8\u09CD\u09A4'],
+            ['\x9a\x91', '\u09A8\u09CD\u09A5'],
+            ['\x9b`', '\u09A8\u09CD\u09A6'],
+            ['\x9b\xd8', '\u09A8\u09CD\u09A6\u09CD\u09AC'],
+            ['\xdc', '\u09A8\u09CD\u09A7'],
+            ['b\x8c', '\u09A8\u09CD\u09A8'],
+            ['\x9a^', '\u09A8\u09CD\u09AC'],
+            ['b\xa5', '\u09A8\u09CD\u09AE'],
+            ['\xcb\xa1', '\u09A4\u09CD\u09A4\u09CD\u09AC'],
+            ['\xcb', '\u09A4\u09CD\u09A4'],
+            ['\xcc', '\u09A4\u09CD\u09A5'],
+            ['Z\x8c', '\u09A4\u09CD\u09A8'],
+            ['Z\xa5', '\u09A4\u09CD\u09AE'],
+            ['Z\xa1', '\u09A4\u09CD\u09AC'],
+            ['\xce', '\u09A4\u09CD\u09B0'],
+            ['\xaf\xbf', '\u09B8\u09CD\u09A4\u09CD\u09B0'],
+            ['_\xa1', '\u09A5\u09CD\u09AC'],
+            ['\x98M', '\u09A6\u09CD\u0997'],
+            ['\x98N', '\u09A6\u09CD\u0998'],
+            ['\xcf', '\u09A6\u09CD\u09A6'],
+            ['\xd7', '\u09A6\u09CD\u09A7'],
+            ['\x98\xa1', '\u09A6\u09CD\u09AC'],
+            ['\xd8', '\u09A6\u09CD\u09AC'],
+            ['\x99\xa2', '\u09A6\u09CD\u09AD'],
+            ['\xd9', '\u09A6\u09CD\u09AE'],
+            ['a\x9f', '\u09A7\u09CD\u09AC'],
+            ['a\xa5', '\u09A7\u09CD\u09AE'],
+            ['\xde', '\u09AA\u09CD\u099F'],
+            ['\xdf', '\u09AA\u09CD\u09A4'],
+            ['c\x8c', '\u09AA\u09CD\u09A8'],
+            ['\xe0', '\u09AA\u09CD\u09AA'],
+            ['c\xad', '\u09AA\u09CD\u09B2'],
+            ['c\xf8', '\u09AA\u09CD\u09B2'],
+            ['\xe1', '\u09AA\u09CD\u09B8'],
+            ['d\xac', '\u09AB\u09CD\u09B2'],
+            ['\xe2', '\u09AC\u09CD\u099C'],
+            ['\xe3', '\u09AC\u09CD\u09A6'],
+            ['\xe4', '\u09AC\u09CD\u09A7'],
+            ['e\x9f', '\u09AC\u09CD\u09AC'],
+            ['e\xad', '\u09AC\u09CD\u09B2'],
+            ['\xe5', '\u09AD\u09CD\u09B0'],
+            ['g\x8c', '\u09AE\u09CD\u09A8'],
+            ['\xa4\xfa', '\u09AE\u09CD\u09AA'],
+            ['\xe7', '\u09AE\u09CD\u09AB'],
+            ['\xa4^', '\u09AE\u09CD\u09AC'],
+            ['\xa4\xa2', '\u09AE\u09CD\u09AD'],
+            ['\xa4\xa3', '\u09AE\u09CD\u09AD\u09CD\u09B0'],
+            ['\xa4\xa7', '\u09AE\u09CD\u09AE'],
+            ['\xa4\xad', '\u09AE\u09CD\u09B2'],
+            ['i"', '\u09B0\u09C1'],
+            ['i\xe6', '\u09B0\u09C1'],
+            ['i\x83', '\u09B0\u09C2'],
+            ['\xe9', '\u09B2\u09CD\u0995'],
+            ['\xea', '\u09B2\u09CD\u0997'],
+            ['\xeb', '\u09B2\u09CD\u099F'],
+            ['\xec', '\u09B2\u09CD\u09A1'],
+            ['\xed', '\u09B2\u09CD\u09AA'],
+            ['\xee', '\u09B2\u09CD\u09AB'],
+            ['j\xa6', '\u09B2\u09CD\u09AC'],
+            ['j\xa5', '\u09B2\u09CD\u09AE'],
+            ['j\xf8', '\u09B2\u09CD\u09B2'],
+            ['\xef', '\u09B6\u09C1'],
+            ['\xf0', '\u09B6\u09CD\u099A'],
+            ['k\x8c', '\u09B6\u09CD\u09A8'],
+            ['k\xa6', '\u09B6\u09CD\u09AC'],
+            ['k\xa5', '\u09B6\u09CD\u09AE'],
+            ['k\xf8', '\u09B6\u09CD\u09B2'],
+            ['k\xad', '\u09B6\u09CD\u09B2'],
+            ['\xae\x8b', '\u09B7\u09CD\u0995'],
+            ['\xae\x8c', '\u09B7\u09CD\u0995\u09CD\u09B0'],
+            ['\xf3', '\u09B7\u09CD\u099F'],
+            ['\xf4', '\u09B7\u09CD\u09A0'],
+            ['\xf2', '\u09B7\u09CD\u09A3'],
+            ['\xae\xfa', '\u09B7\u09CD\u09AA'],
+            ['\xf5', '\u09B7\u09CD\u09AB'],
+            ['\xae\xa7', '\u09B7\u09CD\u09AE'],
+            ['\xaf\x8b', '\u09B8\u09CD\u0995'],
+            ['\xf7', '\u09B8\u09CD\u099F'],
+            ['\xf6', '\u09B8\u09CD\u0996'],
+            ['\xaf\x97', '\u09B8\u09CD\u09A4'],
+            ['\xaf\xcd', '\u09B8\u09CD\u09A4'],
+            ['\xaf\x91', '\u09B8\u09CD\u09A5'],
+            ['m\x8c', '\u09B8\u09CD\u09A8'],
+            ['\xaf\xfa', '\u09B8\u09CD\u09AA'],
+            ['\xf9', '\u09B8\u09CD\u09AB'],
+            ['\xaf^', '\u09B8\u09CD\u09AC'],
+            ['\xaf\xa7', '\u09B8\u09CD\u09AE'],
+            ['\xaf\xad', '\u09B8\u09CD\u09B2'],
+            ['\xfb', '\u09B9\u09C1'],
+            ['n\xe8', '\u09B9\u09CD\u09A3'],
+            ['\xfd', '\u09B9\u09CD\u09A8'],
+            ['\xfe', '\u09B9\u09CD\u09AE'],
+            ['n\xac', '\u09B9\u09CD\u09B2'],
+            ['\xfc', '\u09B9\u09C3'],
+            ['\xa9', '\u09B0\u09CD'],      // র্
+            ['Av', '\u0986'],              // আ — must before A
+            ['A', '\u0985'], ['B', '\u0987'], ['C', '\u0988'], ['D', '\u0989'],
+            ['E', '\u098A'], ['F', '\u098B'], ['G', '\u098F'], ['H', '\u0990'],
+            ['I', '\u0993'], ['J', '\u0994'],
+            ['K', '\u0995'], ['L', '\u0996'], ['M', '\u0997'], ['N', '\u0998'], ['O', '\u0999'],
+            ['P', '\u099A'], ['Q', '\u099B'], ['R', '\u099C'], ['S', '\u099D'], ['T', '\u099E'],
+            ['U', '\u099F'], ['V', '\u09A0'], ['W', '\u09A1'], ['X', '\u09A2'], ['Y', '\u09A3'],
+            ['Z', '\u09A4'], ['_', '\u09A5'], ['`', '\u09A6'], ['a', '\u09A7'], ['b', '\u09A8'],
+            ['c', '\u09AA'], ['d', '\u09AB'], ['e', '\u09AC'], ['f', '\u09AD'], ['g', '\u09AE'],
+            ['h', '\u09AF'], ['i', '\u09B0'], ['j', '\u09B2'], ['k', '\u09B6'], ['l', '\u09B7'],
+            ['m', '\u09B8'], ['n', '\u09B9'],
+            ['o', '\u09DC'], ['p', '\u09DD'], ['q', '\u09DF'], ['r', '\u09CE'],
+            ['0', '\u09E6'], ['1', '\u09E7'], ['2', '\u09E8'], ['3', '\u09E9'], ['4', '\u09EA'],
+            ['5', '\u09EB'], ['6', '\u09EC'], ['7', '\u09ED'], ['8', '\u09EE'], ['9', '\u09EF'],
+            ['v', '\u09BE'], ['w', '\u09BF'], ['x', '\u09C0'], ['y', '\u09C1'], ['z', '\u09C1'],
+            ['~', '\u09C2'], ['\x85', '\u09C3'], ['\x87', '\u09C7'], ['\x86', '\u09C7'],
+            ['\x89', '\u09C8'], ['\x8a', '\u09D7'],
+            ['\xab', '\u09CD\u09B0'], ['\xd6', '\u09CD\u09B0'], ['\xaa', '\u09CD\u09B0'],
+            ['\xa8', '\u09CD\u09AF'],
+            ['&', '\u09CD'],
+            ['s', '\u0982'], ['t', '\u0983'], ['u', '\u0981'],
+            ['|', '\u0964'],
+            ['\xd4', '\u2018'], ['\xd5', '\u2019'],
+            ['\xd2', '\u201c'], ['\xd3', '\u201d'],
+        ];
 
         function reArrangeConverted(str) {
             for (var i = 0; i < str.length; i++) {
-                if (i > 0 && str[i] === "\u09CD" && (IsBanglaKar(str[i - 1]) || IsBanglaNukta(str[i - 1])) && i < str.length - 1) {
+                // Move halant before vowel sign if it appears after it
+                if (i > 0 && str[i] === '\u09CD' && (isKar(str[i - 1]) || isNukta(str[i - 1])) && i < str.length - 1) {
                     str = str.slice(0, i - 1) + str[i] + str[i + 1] + str[i - 1] + str.slice(i + 2);
                 }
-                if (i > 0 && i < str.length - 1 && str[i] === "\u09CD" && str[i - 1] === "\u09B0" && (i < 2 || str[i - 2] !== "\u09CD") && IsBanglaKar(str[i + 1])) {
+                // Move reph to its proper position
+                if (i > 0 && i < str.length - 1 && str[i] === '\u09CD' && str[i - 1] === '\u09B0' && (i < 2 || str[i - 2] !== '\u09CD') && isKar(str[i + 1])) {
                     str = str.slice(0, i - 1) + str[i + 1] + str[i - 1] + str[i] + str.slice(i + 2);
                 }
             }
             return str;
         }
 
-        function convertBijoyToUni(line) {
-            if (!line) return "";
-            for (var k in b2u_map) line = line.split(k).join(b2u_map[k]);
-            return reArrangeConverted(line);
+        function convertBijoyToUni(text) {
+            if (!text) return '';
+            text = applyMap(b2uRaw, text);
+            return reArrangeConverted(text);
         }
 
-        // ===== UI wiring =====
+        // ============================================================
+        // UI wiring
+        // ============================================================
         document.getElementById('uni-to-bijoy-btn').onclick = function () {
             var inp = document.getElementById('unicode-input').value;
             document.getElementById('bijoy-output').value = convertUniToBijoy(inp);
@@ -541,11 +889,11 @@
 
         function copyText(id) {
             var el = document.getElementById(id);
-            el.select();
-            document.execCommand('copy');
-            var t = document.getElementById('toast');
-            t.classList.add('show');
-            setTimeout(function () { t.classList.remove('show'); }, 2000);
+            el.focus(); el.select();
+            try { document.execCommand('copy'); } catch (e) { }
+            var toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(function () { toast.classList.remove('show'); }, 2000);
         }
 
         function clearText(id) {
